@@ -1,19 +1,29 @@
 import styled, {keyframes, css} from 'styled-components'
 
 export const Container = styled.div`
+    width: calc(100% - 40px);
     display: flex;
     padding: 20px;
     position: absolute;
     flex-wrap:wrap;
+    justify-content: center;
+`
+
+export const ComparationText = styled.h1`
+  white-space: pre-line;
+  text-align: center;
+  margin-bottom: 70px;
 `
 
 export const List = styled.ul`
     width: 100%;
     display: flex;
+    justify-content: center;
     column-gap: 20px;
     li {
         background-color: ${ props  => props.done === "true"  && "green"};
     }
+    margin-bottom: 70px;
     
 `
 const fadeInInput = keyframes`
@@ -69,14 +79,14 @@ export const Item = styled.li`
     ${({ current }) =>
         current === "true" 
         ? 
-        css`animation: ${fadeInInput} 1s ease-in-out forwards`
+        css`animation: ${fadeInInput} 700ms ease-in-out forwards`
         : 
         ''
     };
     ${({ less }) =>
         less === "true" 
         ? 
-        css`animation: ${fadeInInputin} 1s ease-in-out forwards`
+        css`animation: ${fadeInInputin} 700ms ease-in-out forwards`
         : 
         ''
     };

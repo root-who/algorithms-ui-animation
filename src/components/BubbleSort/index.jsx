@@ -1,7 +1,7 @@
-'use client'
+// 'use client'
 
 import * as S from './style'
-import { useState, useEffect } from 'react'
+import { useState} from 'react'
 
 const BubbleSort = () => {
     
@@ -15,13 +15,10 @@ const BubbleSort = () => {
         { number: 75, current: false, next: false, less:false},
         { number: 3, current: false, next: false, less:false},
     ])
-
+    const [currentComparation, setCurrentComparation] = useState("This is the Bubblue Sort Algorithm\n\nSort me!")
     const [done, setDone] = useState(false)
-
-    useEffect(()=>{
-    }, [list, done])
-
-
+    const [running, setRunning] = useState(false)
+    
     function reset(){
         setList([...[
             { number: 72, current: false, next: false, less:false},
@@ -43,47 +40,59 @@ const BubbleSort = () => {
         let newList = list
         const len = list.length;
         for (let i = 0; i < len; i++){
-            for (let j = 0; j < len - 1 - i; j++){
-                if(newList[j].number > newList[j + 1].number){
-                    newList[j + 1].next = true
-                    newList[j].current = true
+            for (let j = 1; j < len - i; j++){
+                if(newList[j-1].number > newList[j].number){
+                    setCurrentComparation(`Current Comparation: ${newList[j-1].number} > ${newList[j].number}\n\n`)
+                    //Change the atribute and handle list to do the animation
+                    newList[j-1].current = true
+                    newList[j].next = true
                     handleList(newList)
+                    //Wait for the animation happen
                     await new Promise(resolve => {
-                        setTimeout(resolve, 1500)
+                        setTimeout(resolve, 700)
                     })
-                    newList[j + 1].next = false
-                    const aux = newList[j]
-                    newList[j] = newList[j + 1]
-                    newList[j + 1] = aux
-                    if(j === len - 2 - i){
-                        newList[j + 1].current = false
-                        handleList(newList)
-                    }
+                    //Now change the values and handle list 
+                    newList[j-1].current = false
+                    newList[j].next = false
+                    const aux = newList[j-1]
+                    newList[j-1] = newList[j]
+                    newList[j] = aux
+                    handleList(newList)
+                    //Wait for make the animation smooth
+                    await new Promise(resolve => {
+                        setTimeout(resolve, 300)
+                    })
                 }
                 else{
-                    newList[j].current = false
-                    newList[j].less = true
+                    setCurrentComparation(`Current Comparation: ${newList[j-1].number} < ${newList[j].number}\n\n`)
+                    //Change the atribute and handle list to do the animation
+                    newList[j-1].less=true
                     handleList(newList)
-                    handleList(newList)
+                    //Wait for the animation happen
                     await new Promise(resolve => {
-                        setTimeout(resolve, 1500)
+                        setTimeout(resolve, 1000)
                     })
-                    newList[j].less = false
+                    //Reset the atribute and handle list to do not do continue with the animation
+                    newList[j-1].less=false
                     handleList(newList)
                 }
             }
         }
         setDone(true)
+        setCurrentComparation("It's sorted!")
         await new Promise(resolve => {
-            setTimeout(resolve, 1500)
-        })
+            setTimeout(resolve, 3000)
+            })
+        setCurrentComparation("This is the Bubblue Sort Algorithm\n\nSort me!")
         reset()
+        setRunning(false)
         setDone(false)
     }
 
     return (  
         <>
             <S.Container>
+                <S.ComparationText>{currentComparation}</S.ComparationText>
                 <S.List done={done.toString()}>
                     {
                         list.map((value, key)=>(
@@ -99,8 +108,10 @@ const BubbleSort = () => {
                     }
                 </S.List>
                 <button onClick={()=>{
-                    let passList = list
-                    bubbleSort(passList)
+                    if(!running){
+                        setRunning(true)
+                        bubbleSort(list)
+                    }
                 }}>Sort</button>
             </S.Container>
             
